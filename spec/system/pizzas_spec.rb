@@ -6,6 +6,9 @@ RSpec.describe "Pizza management", type: :system do
     click_on 'Pizzas', match: :first
   end
 
+  let(:beef) { 'Beef' }
+  let(:ham) { 'Ham' }
+  let(:meat) { 'Meat' }
   let(:valid_attribs) {
     {
       name: 'A new pizza',
@@ -31,35 +34,34 @@ RSpec.describe "Pizza management", type: :system do
   end
 
   it 'creates new pizza' do
-    Topping.create(name: 'Beef')
+    Topping.create(name: beef)
     
     visit_pizza_menu
     click_on 'New', match: :first
 
     expect(page).to have_text('New Pizza')
 
-    fill_in 'Name', with: 'Meat'
-    uncheck 'Beef'
+    fill_in 'Name', with: meat
+    uncheck beef
     click_button 'Create Pizza'
 
-    expect(page).to have_text('Meat')
-    expect(page).not_to have_text('Beef')
+    expect(page).to have_text(meat)
+    expect(page).not_to have_text(beef)
   end
 
   it 'creates new pizza with toppings' do
-    Topping.create(name: 'Beef')
-    Topping.create(name: 'Ham')
+    [beef, ham].each { |t| Topping.create(name: t) }
 
     visit_pizza_menu
     click_on 'New', match: :first
 
-    fill_in 'Name', with: 'Meat'
-    check 'Beef'
+    fill_in 'Name', with: meat
+    check beef
     click_button 'Create Pizza'
 
-    expect(page).to have_text('Meat')
-    expect(page).to have_text('Beef')
-    expect(page).not_to have_text('Ham')
+    expect(page).to have_text(meat)
+    expect(page).to have_text(beef)
+    expect(page).not_to have_text(ham)
   end
 
   it 'prevents creation of dupplicate pizza' do
@@ -94,10 +96,10 @@ RSpec.describe "Pizza management", type: :system do
 
     expect(page).to have_text('Edit Pizza')
 
-    fill_in 'Name', with: 'Meat'
+    fill_in 'Name', with: meat
     click_button 'Update Pizza'
 
-    expect(page).to have_text('Meat')
+    expect(page).to have_text(meat)
     expect(page).not_to have_text(valid_attribs[:name])
   end
 
@@ -118,8 +120,8 @@ RSpec.describe "Pizza management", type: :system do
   end
 
   it 'prevents updating a duplicate pizza' do
-    second_pizza = 'Second pizza'
     new_pizza
+    second_pizza = 'Second pizza'
     Pizza.create(name: second_pizza)
 
     visit_pizza_menu

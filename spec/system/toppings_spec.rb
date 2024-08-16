@@ -5,6 +5,7 @@ RSpec.describe "Toppings management", type: :system do
   let(:valid_attribs) { { name: 'A new topping' } }
   let(:invalid_attribs) { valid_attribs.merge(name: '') }
   let(:new_topping) { Topping.create(valid_attribs) }
+  let(:meat) { 'Meat' }
 
   it 'displays message when no available toppings' do
     visit toppings_path
@@ -27,10 +28,10 @@ RSpec.describe "Toppings management", type: :system do
 
     expect(page).to have_text('New Topping')
 
-    fill_in 'Name', with: 'Meat'
+    fill_in 'Name', with: meat
     click_button 'Create Topping'
 
-    expect(page).to have_text('Meat')
+    expect(page).to have_text(meat)
   end
 
   it 'prevents creation of dupplicate topping' do
@@ -64,24 +65,24 @@ RSpec.describe "Toppings management", type: :system do
 
     expect(page).to have_text('Edit Topping')
 
-    fill_in 'Name', with: 'Meat'
+    fill_in 'Name', with: meat
     click_button 'Update Topping'
 
-    expect(page).to have_text('Meat')
+    expect(page).to have_text(meat)
     expect(page).not_to have_text(valid_attribs[:name])
   end
 
   it 'prevents updating a duplicate topping' do
-    second_topping = 'Second topping'
+    duplicate_topping = 'Second topping'
     new_topping
-    Topping.create(name: second_topping)
+    Topping.create(name: duplicate_topping)
     visit toppings_path
 
-    expect(page).to have_text(second_topping)
+    expect(page).to have_text(duplicate_topping)
     expect(page).to have_text(valid_attribs[:name])
 
     click_on 'Edit', match: :first
-    fill_in 'Name', with: second_topping
+    fill_in 'Name', with: duplicate_topping
     click_button 'Update Topping'
 
     expect(page).to have_text('Name has already been taken')
