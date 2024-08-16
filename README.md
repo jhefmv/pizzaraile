@@ -43,7 +43,7 @@ test:
 
 ## Running locally
 
-1. Start the Rails server by running the command: `bin/rais server`
+1. Start the Rails server by running the command: `bin/rails server`
 2. Open a browser window and navigate to http://localhost:3000
 
 ## Running tests
