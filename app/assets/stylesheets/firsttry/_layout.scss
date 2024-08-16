@@ -1,0 +1,44 @@
+body, html, #root {
+  height: 100%;
+}
+
+body {
+  overflow-y: scroll;
+  opacity: 1 !important;
+}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  html {
+    overflow-x: hidden;
+  }
+}
+
+.main {
+  background: $body-bg;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-width: 0;
+  overflow: hidden;
+  transition: $main-transition;
+  width: 100%;
+}
+
+.content {
+  direction: ltr;
+  flex: 1;
+  padding: $content-padding-mobile;
+  max-width: 100vw;
+  width: 100vw;
+
+  @include media-breakpoint-up(md) {
+    max-width: auto;
+    width: auto;
+  }
+
+  @include media-breakpoint-up(lg) {
+    padding: $content-padding-desktop;
+  }
+}

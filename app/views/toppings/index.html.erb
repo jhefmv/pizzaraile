@@ -1,0 +1,39 @@
+<div class="container-fluid p-0">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="h3">Toppings</h1>
+      <ul class="nav nav-pills justify-content-end">
+        <li class="nav-item"><%= link_to 'New', new_topping_path, class: 'nav-link' %></li>
+      </ul>
+      <table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @toppings.each do |topping| %>
+            <tr>
+              <td><%= link_to topping.name, topping %></td>
+              <td>
+                <%= link_to 'Edit', edit_topping_path(topping) %> |
+                <%= link_to 'Delete', topping_path(topping), data: {
+                                      turbo_method: :delete,
+                                      turbo_confirm: 'Are you sure?'
+                                    } %>
+              </td>
+            </tr>
+          <% end %>
+          <% if (@toppings.empty?) %>
+            <tr><td colspan="2">You have no toppings.</td></tr>
+          <% end %>
+        </tbody>
+      </table>
+      <hr />
+      <ul class="nav nav-pills justify-content-end">
+        <li class="nav-item"><%= link_to 'New', new_topping_path, class: 'nav-link' %></li>
+      </ul>
+    </div>
+  </div>
+</div>

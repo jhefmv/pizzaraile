@@ -1,0 +1,36 @@
+<% if (pizza.errors.present?) %>
+<div class="alert-messages">
+  <div class="alert alert-danger">
+    <ul>
+      <% pizza.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+<% end %>
+<%= form_with model: pizza do |form| %>
+  <div class="row">
+    <div class="mb-3">
+      <%= form.label :name, class: 'form-label' %>
+      <%= form.text_field :name, class: 'form-control' %>
+    </div>
+    <div class="mb-3">
+      <%= form.label :description, class: 'form-label' %><br>
+      <%= form.text_area :description, class: 'form-control' %>
+    </div>
+    <div class="mb-3">
+      <h5 class="h6">Toppings:</h5>
+      <%= form.collection_check_boxes(:topping_ids, Topping.all.reorder(:name), :id, :name) do |b| %>
+        <div class="form-check form-check-inline">
+          <%= b.label { b.check_box(class: 'form-check-input') + b.text } %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <div class="btn-row">
+    <hr />
+    <%= form.submit nil, class: 'btn btn-primary' %>
+    <%= link_to 'Cancel', pizzas_path, class: 'btn btn-secondary' %>
+  </div>
+<% end %>
