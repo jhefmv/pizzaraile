@@ -54,6 +54,10 @@ group :development, :test do
   gem 'rspec-rails', '~> 6.0.0'
   gem 'shoulda-matchers', '~> 6.0'
 
+  # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
+  gem "capybara"
+  gem "selenium-webdriver"
+
   gem 'pry', require: debug_mode
   gem 'pry-rails', require: debug_mode
   gem 'pry-byebug', require: debug_mode
@@ -72,10 +76,4 @@ group :development do
 
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
-end
-
-group :test do
-  # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
-  gem "capybara"
-  gem "selenium-webdriver"
 end
