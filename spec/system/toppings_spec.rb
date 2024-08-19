@@ -1,5 +1,4 @@
 require "rails_helper"
-require "pry"
 
 RSpec.describe "Toppings management", type: :system do
   def create_new_topping(attribs)
