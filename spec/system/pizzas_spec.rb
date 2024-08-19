@@ -6,6 +6,10 @@ RSpec.describe "Pizza management", type: :system do
     click_on 'Pizzas', match: :first
   end
 
+  def create_new_pizza(attribs)
+    Pizza.create(attribs)
+  end
+
   let(:beef) { 'Beef' }
   let(:ham) { 'Ham' }
   let(:meat) { 'Meat' }
@@ -15,7 +19,6 @@ RSpec.describe "Pizza management", type: :system do
       toppings_attributes: [{name: 'olives'}]
     }
   }
-  let(:new_pizza) { Pizza.create(valid_attribs) }
 
   it 'displays message when no available pizza' do
     visit_pizza_menu
@@ -24,13 +27,13 @@ RSpec.describe "Pizza management", type: :system do
   end
 
   it 'lists available pizzas and their toppings' do
-    new_pizza
+    new_pizza = create_new_pizza(valid_attribs)
     visit_pizza_menu
 
     expect(page).to have_text('Pizzas')
     expect(page).to have_text('New')
-    expect(page).to have_text(valid_attribs[:name])
-    expect(page).to have_text(valid_attribs[:toppings_attributes].map { |t| t[:name] }.join(', '))
+    expect(page).to have_text(new_pizza.name)
+    expect(page).to have_text(new_pizza.topping_names)
   end
 
   it 'creates new pizza' do
@@ -65,32 +68,32 @@ RSpec.describe "Pizza management", type: :system do
   end
 
   it 'prevents creation of dupplicate pizza' do
-    new_pizza
+    new_pizza = create_new_pizza(valid_attribs)
     visit_pizza_menu
 
     click_on 'New', match: :first
-    fill_in 'Name', with: valid_attribs[:name]
+    fill_in 'Name', with: new_pizza.name
     click_button 'Create Pizza'
 
     expect(page).to have_text('Name has already been taken')
   end
 
   it 'deletes existing pizza from the list' do
-    new_pizza
+    new_pizza = create_new_pizza(valid_attribs)
     visit_pizza_menu
 
-    expect(page).to have_text(valid_attribs[:name])
+    expect(page).to have_text(new_pizza.name)
 
     click_on 'Delete', match: :first
 
-    expect(page).not_to have_text(valid_attribs[:name])
+    expect(page).not_to have_text(new_pizza.name)
   end
 
   it 'edits existing pizza from the list' do
-    new_pizza
+    new_pizza = create_new_pizza(valid_attribs)
     visit_pizza_menu
 
-    expect(page).to have_text(valid_attribs[:name])
+    expect(page).to have_text(new_pizza.name)
 
     click_on 'Edit', match: :first
 
@@ -100,7 +103,7 @@ RSpec.describe "Pizza management", type: :system do
     click_button 'Update Pizza'
 
     expect(page).to have_text(meat)
-    expect(page).not_to have_text(valid_attribs[:name])
+    expect(page).not_to have_text(new_pizza.name)
   end
 
   it 'update toppings on existing pizza' do
@@ -108,7 +111,7 @@ RSpec.describe "Pizza management", type: :system do
     second_topping = 'Green Pepper'
     Topping.create(name: second_topping)
 
-    new_pizza
+    new_pizza = create_new_pizza(valid_attribs)
     visit_pizza_menu
     click_on 'Edit', match: :first
     uncheck existing_topping
@@ -120,17 +123,16 @@ RSpec.describe "Pizza management", type: :system do
   end
 
   it 'prevents updating a duplicate pizza' do
-    new_pizza
-    second_pizza = 'Second pizza'
-    Pizza.create(name: second_pizza)
+    first_pizza = create_new_pizza(valid_attribs)
+    second_pizza = create_new_pizza(name: 'Second pizza')
 
     visit_pizza_menu
 
-    expect(page).to have_text(second_pizza)
-    expect(page).to have_text(valid_attribs[:name])
+    expect(page).to have_text(second_pizza.name)
+    expect(page).to have_text(first_pizza.name)
 
     click_on 'Edit', match: :first
-    fill_in 'Name', with: second_pizza
+    fill_in 'Name', with: second_pizza.name
     click_button 'Update Pizza'
 
     expect(page).to have_text('Name has already been taken')

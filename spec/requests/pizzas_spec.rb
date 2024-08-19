@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe 'Pizzas', type: :request do
+  def create_new_pizza(attribs)
+    Pizza.create(attribs)
+  end
+
   let(:valid_attribs) {
     {
       name: 'A new pizza',
@@ -8,11 +12,10 @@ RSpec.describe 'Pizzas', type: :request do
     }
   }
   let(:invalid_attribs) { valid_attribs.dup.merge(name: '') }
-  let(:new_pizza) { Pizza.create(valid_attribs) }
 
   describe 'GET /index' do
     it 'returns list of available pizzas' do
-      new_pizza
+      new_pizza = create_new_pizza(valid_attribs)
       get pizzas_url
 
       expect(response).to be_successful
@@ -20,7 +23,7 @@ RSpec.describe 'Pizzas', type: :request do
     end
 
     it 'list toppings on each pizza' do
-      new_pizza
+      new_pizza = create_new_pizza(valid_attribs)
       get pizzas_url
 
       expect(response).to be_successful
@@ -81,7 +84,7 @@ RSpec.describe 'Pizzas', type: :request do
       end
 
       it 'does not allow duplicate Pizza' do
-        new_pizza
+        new_pizza = create_new_pizza(valid_attribs)
 
         expect {
           post pizzas_url, params: { pizza: valid_attribs }
@@ -90,7 +93,7 @@ RSpec.describe 'Pizzas', type: :request do
       end
 
       it 'does not allow duplicate topppings on a Pizza' do
-        new_pizza
+        new_pizza = create_new_pizza(valid_attribs)
         toppings = [{name: new_pizza.toppings.first.name}, {name: 'bacon'}]
         payload = valid_attribs.dup.merge(name: 'Meaty', toppings_attributes: toppings)
 
@@ -110,6 +113,7 @@ RSpec.describe 'Pizzas', type: :request do
 
   describe 'GET /show' do
     it 'returns existing Pizza attributes' do
+      new_pizza = create_new_pizza(valid_attribs)
       get edit_pizza_url(new_pizza)
 
       expect(response).to be_successful
@@ -117,6 +121,7 @@ RSpec.describe 'Pizzas', type: :request do
     end
 
     it 'lists toppings on a Pizza' do
+      new_pizza = create_new_pizza(valid_attribs)
       get edit_pizza_url(new_pizza)
 
       expect(response).to be_successful
@@ -126,6 +131,7 @@ RSpec.describe 'Pizzas', type: :request do
 
   describe "GET /edit" do
     it 'returns existing Pizza attributes' do
+      new_pizza = create_new_pizza(valid_attribs)
       get edit_pizza_url(new_pizza)
 
       expect(response).to be_successful
@@ -133,6 +139,7 @@ RSpec.describe 'Pizzas', type: :request do
     end
 
     it 'lists toppings on a Pizza' do
+      new_pizza = create_new_pizza(valid_attribs)
       get edit_pizza_url(new_pizza)
 
       expect(response).to be_successful
@@ -145,12 +152,14 @@ RSpec.describe 'Pizzas', type: :request do
       let(:update_attribs) { {name: 'Updated pizza' } }
 
       it 'updates existing Pizza' do
+        new_pizza = create_new_pizza(valid_attribs)
         patch pizza_url(new_pizza), params: { pizza: update_attribs }
 
         expect(Pizza.find(new_pizza.id).name).to eql(update_attribs[:name])
       end
 
       it 'adds new toppings to existing Pizza' do
+        new_pizza = create_new_pizza(valid_attribs)
         old_toppings = new_pizza.toppings.map(&:name)
         new_toppings = [{name: 'pineapple'}, {name: 'bacon'}]
         payload = update_attribs.dup.merge(toppings_attributes: new_toppings)
@@ -175,6 +184,7 @@ RSpec.describe 'Pizzas', type: :request do
       end
 
       it 'redirects to the existing Pizza' do
+        new_pizza = create_new_pizza(valid_attribs)
         patch pizza_url(new_pizza), params: { pizza: update_attribs }
 
         expect(response).to redirect_to(pizza_url(new_pizza))
@@ -183,13 +193,14 @@ RSpec.describe 'Pizzas', type: :request do
 
     context 'with invalid parameters' do
       it 'does not update existing Pizza' do
+        new_pizza = create_new_pizza(valid_attribs)
         expect {
           patch pizza_url(new_pizza), params: { pizza: invalid_attribs }
         }.not_to change(new_pizza, :name).from(new_pizza.name)
       end
 
       it 'does not allow duplicate Pizza' do
-        new_pizza
+        new_pizza = create_new_pizza(valid_attribs)
         second = Pizza.create(name: 'Second Pizza')
 
         expect {
@@ -199,7 +210,7 @@ RSpec.describe 'Pizzas', type: :request do
       end
 
       it 'does not allow duplicate topppings on a Pizza' do
-        new_pizza
+        new_pizza = create_new_pizza(valid_attribs)
         toppings = [{name: new_pizza.toppings.first.name}, {name: 'bacon'}]
         payload = valid_attribs.dup.merge(name: 'Meaty', toppings_attributes: toppings)
 
@@ -210,6 +221,7 @@ RSpec.describe 'Pizzas', type: :request do
       end
 
       it 'returns errors' do
+        new_pizza = create_new_pizza(valid_attribs)
         patch pizza_url(new_pizza), params: { pizza: invalid_attribs }
 
         expect(response).to be_unprocessable
@@ -219,7 +231,7 @@ RSpec.describe 'Pizzas', type: :request do
 
   describe "DELETE /destroy" do
     it 'removes the requested Pizza' do
-      new_pizza
+      new_pizza = create_new_pizza(valid_attribs)
 
       expect {
         delete pizza_url(new_pizza)
@@ -228,6 +240,7 @@ RSpec.describe 'Pizzas', type: :request do
     end
 
     it 'redirects to the list of available pizzas' do
+      new_pizza = create_new_pizza(valid_attribs)
       delete pizza_url(new_pizza)
 
       expect(response).to redirect_to(pizzas_url)

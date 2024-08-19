@@ -1,13 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe 'Toppings', type: :request do
+  def create_new_topping(attribs)
+    Topping.create(attribs)
+  end
+
   let(:valid_attribs) { { name: 'A new topping' } }
   let(:invalid_attribs) { valid_attribs.merge(name: '') }
-  let(:new_topping) { Topping.create(valid_attribs) }
 
   describe 'GET /index' do
     it 'returns list of available toppings' do
-      new_topping
+      new_topping = create_new_topping(valid_attribs)
       get toppings_url
 
       expect(response).to be_successful
@@ -55,6 +58,7 @@ RSpec.describe 'Toppings', type: :request do
 
   describe 'GET /show' do
     it 'returns existing Topping attributes' do
+      new_topping = create_new_topping(valid_attribs)
       get edit_topping_url(new_topping)
 
       expect(response).to be_successful
@@ -64,6 +68,7 @@ RSpec.describe 'Toppings', type: :request do
 
   describe "GET /edit" do
     it 'returns existing Topping attributes' do
+      new_topping = create_new_topping(valid_attribs)
       get edit_topping_url(new_topping)
 
       expect(response).to be_successful
@@ -76,12 +81,14 @@ RSpec.describe 'Toppings', type: :request do
       let(:update_attribs) { {name: 'Updated topping' } }
 
       it 'updates existing Topping' do
+        new_topping = create_new_topping(valid_attribs)
         patch topping_url(new_topping), params: { topping: update_attribs }
 
         expect(Topping.find(new_topping.id).name).to eql(update_attribs[:name])
       end
 
       it 'redirects to the existing Topping' do
+        new_topping = create_new_topping(valid_attribs)
         patch topping_url(new_topping), params: { topping: update_attribs }
 
         expect(response).to redirect_to(topping_url(new_topping))
@@ -90,12 +97,14 @@ RSpec.describe 'Toppings', type: :request do
 
     context 'with invalid parameters' do
       it 'does not update existing Topping' do
+        new_topping = create_new_topping(valid_attribs)
         expect {
           patch topping_url(new_topping), params: { topping: invalid_attribs }
         }.not_to change(new_topping, :name).from(new_topping.name)
       end
 
       it 'returns errors' do
+        new_topping = create_new_topping(valid_attribs)
         patch topping_url(new_topping), params: { topping: invalid_attribs }
 
         expect(response).to be_unprocessable
@@ -105,7 +114,7 @@ RSpec.describe 'Toppings', type: :request do
 
   describe "DELETE /destroy" do
     it 'removes the requested Topping' do
-      new_topping
+      new_topping = create_new_topping(valid_attribs)
       expect {
         delete topping_url(new_topping)
       }.to change(Topping, :count).by(-1)
@@ -113,6 +122,7 @@ RSpec.describe 'Toppings', type: :request do
     end
 
     it 'redirects to the list of available toppings' do
+      new_topping = create_new_topping(valid_attribs)
       delete topping_url(new_topping)
 
       expect(response).to redirect_to(toppings_url)
