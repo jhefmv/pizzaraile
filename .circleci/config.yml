@@ -2,7 +2,7 @@
 # Stacks detected: deps:ruby:.
 version: 2.1
 orbs:
-  ruby: circleci/ruby@2.0.1
+  ruby: circleci/ruby@2.1.4
 jobs:
   test-ruby:
     # Install gems, run rspec tests
@@ -10,6 +10,7 @@ jobs:
       - image: cimg/ruby:3.3.4-node
       - image: circleci/postgres
     environment:
+      POSTGRES_USER: postgres
       RAILS_ENV: test
     steps:
       - checkout
