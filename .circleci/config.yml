@@ -11,6 +11,8 @@ jobs:
       - image: circleci/postgres:9.5-alpine
         environment:
           POSTGRES_USER: postgres
+          POSTGRES_DB: pizzaraile_test
+          POSTGRES_PASSWORD: ""
     environment:
       RAILS_ENV: test
     steps:
