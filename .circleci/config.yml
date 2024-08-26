@@ -9,8 +9,9 @@ jobs:
     docker:
       - image: cimg/ruby:3.3.4-node
       - image: circleci/postgres
+        environment:
+          POSTGRES_USER: postgres
     environment:
-      POSTGRES_USER: postgres
       RAILS_ENV: test
     steps:
       - checkout
