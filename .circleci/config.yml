@@ -2,13 +2,13 @@
 # Stacks detected: deps:ruby:.
 version: 2.1
 orbs:
-  ruby: circleci/ruby@2.0.1
+  ruby: cimg/ruby@2.0.1
 jobs:
   test-ruby:
     # Install gems, run rspec tests
     docker:
       - image: cimg/ruby:3.3.4-node
-      - image: circleci/postgres:9.5-alpine
+      - image: cimg/postgres:9.5-alpine
     environment:
       RAILS_ENV: test
     steps:
