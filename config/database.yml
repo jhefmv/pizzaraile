@@ -27,10 +27,10 @@ development:
   # To create additional roles in PostgreSQL see `$ createuser --help`.
   # When left blank, PostgreSQL will use the default role. This is
   # the same name as the operating system user running Rails.
-  username: <%= ENV['PIZZARAILE_DATABASE_USERNAME'] || ENV['POSTGRES_USER'] || 'pizzaraile' %>
+  username: <%= ENV['PIZZARAILE_DATABASE_USERNAME'] || ENV['PG_USER'] || 'pizzaraile' %>
 
   # The password associated with the PostgreSQL role (username).
-  password: <%= ENV['PIZZARAILE_DATABASE_PASSWORD'] %>
+  password: <%= ENV['PIZZARAILE_DATABASE_PASSWORD'] || ENV['PG_PASSWORD'] %>
 
   # Connect on a TCP socket. Omitted by default since the client uses a
   # domain socket that doesn't need configuration. Windows does not have
@@ -57,6 +57,9 @@ development:
 test:
   <<: *default
   database: pizzaraile_test
+  username: <%= ENV['PIZZARAILE_DATABASE_USERNAME'] || ENV['PG_USER'] || 'pizzaraile' %>
+  password: <%= ENV['PIZZARAILE_DATABASE_PASSWORD'] || ENV['PG_PASSWORD'] %>
+  host: localhost
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is

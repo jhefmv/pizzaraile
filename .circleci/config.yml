@@ -11,9 +11,12 @@ jobs:
       - image: circleci/postgres:9.5-alpine
         environment:
           POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
           POSTGRES_DB: pizzaraile_test
-          POSTGRES_PASSWORD: ""
     environment:
+      PGHOST: 127.0.0.1
+      PG_USER: postgres
+      PG_PASSWORD: password
       RAILS_ENV: test
     steps:
       - checkout
